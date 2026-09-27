@@ -85,3 +85,12 @@ class SwitchBotAPI:
 if __name__ == "__main__":
     bot = SwitchBotAPI()
     device_list = bot.get_device_list()
+
+    with open("./device_list.json", "w") as f:
+        f.write(
+            json.dumps(
+                device_list,
+                indent=4,
+                ensure_ascii=False
+            )
+        )
