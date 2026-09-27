@@ -1,6 +1,8 @@
 import os
-import requests
 from dotenv import load_dotenv
+
+import requests
+from requests.exceptions import HTTPError, RequestException
 
 import json
 import time
@@ -61,7 +63,25 @@ class SwitchBotAPI:
         }
 
         return headers
-        
+
+    def get_device_list(self) -> dict:
+        """ Switchbotのデバイスを取得してdictで返す"""
+
+        url = f"{API_BASE_URL}/v1.1/devices"
+
+        try:
+            r = requests.get(
+                url,
+                headers=self.generate_request_headers()
+            )
+            r.raise_for_status()
+        except HTTPError as e:
+            raise HTTPError(f"HTTP Error: {e}")
+        except RequestException as e:
+            raise RequestException(e)
+        else:
+            return r.json()["body"]
 
 if __name__ == "__main__":
-    print("init")
+    bot = SwitchBotAPI()
+    device_list = bot.get_device_list()
